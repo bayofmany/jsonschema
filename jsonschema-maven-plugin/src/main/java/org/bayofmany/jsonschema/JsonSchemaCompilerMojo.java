@@ -30,7 +30,7 @@ import java.io.IOException;
 /**
  * Goal which touches a timestamp file.
  */
-@Mojo(name = "generate", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
+@Mojo(name = "compile", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
 class JsonSchemaCompilerMojo
         extends AbstractMojo {
 
