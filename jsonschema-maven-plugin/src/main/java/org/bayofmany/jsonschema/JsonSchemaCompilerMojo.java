@@ -21,6 +21,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.bayofmany.jsonschema.compiler.Compiler;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -29,32 +30,41 @@ import java.io.IOException;
 /**
  * Goal which touches a timestamp file.
  */
-@Mojo(name = "touch", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
-class MyMojo
+@Mojo(name = "generate", defaultPhase = LifecyclePhase.PROCESS_RESOURCES)
+class JsonSchemaCompilerMojo
         extends AbstractMojo {
+
     /**
-     * Location of the file.
+     * Location of the Json schema files.
      */
-    @Parameter(defaultValue = "${project.build.directory}", property = "outputDir", required = true)
+    @Parameter(defaultValue = "${basedir}/src/main/resources/META-INF/schemas", property = "schemaDir", required = true)
+    private File inputDirectory;
+
+    /**
+     * Location of the output directory.
+     */
+    @Parameter(defaultValue = "${project.build.directory}/generated-sources/jsc", property = "outputDir", required = true)
     private File outputDirectory;
+
+    /**
+     * Base package name from java class generation.
+     */
+    @Parameter(defaultValue = "org.bayofmany.jsonschema", property = "packageName", required = true)
+    private String packageName;
 
     public void execute()
             throws MojoExecutionException {
-        File f = outputDirectory;
 
-        if (!f.exists()) {
-            f.mkdirs();
+        if (!outputDirectory.exists()) {
+            outputDirectory.mkdirs();
         }
-
-        File touch = new File(f, "touch.txt");
 
         FileWriter w = null;
         try {
-            w = new FileWriter(touch);
-
-            w.write("touch.txt");
+            Compiler generator = new Compiler(outputDirectory);
+            generator.generate(inputDirectory.toPath(), packageName);
         } catch (IOException e) {
-            throw new MojoExecutionException("Error creating file " + touch, e);
+            throw new MojoExecutionException("Error compiling json schemas", e);
         } finally {
             if (w != null) {
                 try {

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.bayofmany.jsonschema.generator.Dictionary;
+import org.bayofmany.jsonschema.compiler.Dictionary;
 
 import javax.validation.constraints.Min;
 import java.util.HashSet;

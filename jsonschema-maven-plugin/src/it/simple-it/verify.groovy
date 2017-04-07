@@ -1,3 +1,3 @@
-File touchFile = new File( basedir, "target/touch.txt" );
+File generatedFile = new File( basedir, "target/generated-sources/jsc/org/bayofmany/jsonschema/Person.java" );
 
-assert touchFile.isFile()
+assert generatedFile.isFile()

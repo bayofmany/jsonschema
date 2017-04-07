@@ -1,6 +1,6 @@
 package org.bayofmany.jsonschema.cli;
 
-import org.bayofmany.jsonschema.generator.Generator;
+import org.bayofmany.jsonschema.compiler.Compiler;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +14,7 @@ class Generate {
         File inputDir = new File(args[1]);
         File outputDir = new File(args[2]);
 
-        Generator generator = new Generator(outputDir);
+        Compiler generator = new Compiler(outputDir);
 
         Path root = Paths.get(inputDir.toURI());
 

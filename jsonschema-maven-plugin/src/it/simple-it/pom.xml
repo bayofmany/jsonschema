@@ -21,11 +21,12 @@
         <version>@project.version@</version>
         <executions>
           <execution>
-            <id>touch</id>
-            <phase>validate</phase>
+            <id>generate</id>
             <goals>
-              <goal>touch</goal>
+              <goal>generate</goal>
             </goals>
+            <configuration>
+            </configuration>
           </execution>
         </executions>
       </plugin>

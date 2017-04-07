@@ -3,15 +3,15 @@ package org.bayofmany.jsonschema.model;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import org.bayofmany.jsonschema.generator.Dictionary;
-import org.bayofmany.jsonschema.generator.Util;
+import org.bayofmany.jsonschema.compiler.Dictionary;
+import org.bayofmany.jsonschema.compiler.Util;
 
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.bayofmany.jsonschema.generator.Util.upperCaseFirst;
+import static org.bayofmany.jsonschema.compiler.Util.upperCaseFirst;
 
 public class MetaInformation {
     public final String packageName;

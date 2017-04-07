@@ -1,4 +1,4 @@
-package org.bayofmany.jsonschema.generator;
+package org.bayofmany.jsonschema.compiler;
 
 import org.bayofmany.jsonschema.model.JsonSchema;
 

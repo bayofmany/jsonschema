@@ -3,18 +3,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.bayofmany.jsonschema</groupId>
-    <artifactId>jsonschema-parent</artifactId>
+    <artifactId>jsonschema-project</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>jsonschema-parent</name>
     <description>Parent project for the jsonschema class generator</description>
     <url>http://github.com/bayofmany/jsonschema</url>
 
     <modules>
         <module>jsonschema-validation</module>
+        <module>jsonschema-compiler</module>
         <module>jsonschema-maven-plugin</module>
-        <module>jsonschema-core</module>
     </modules>
 
     <prerequisites>
