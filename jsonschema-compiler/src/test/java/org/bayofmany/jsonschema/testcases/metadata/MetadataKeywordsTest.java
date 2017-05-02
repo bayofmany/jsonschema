@@ -1,7 +1,7 @@
 package org.bayofmany.jsonschema.testcases.metadata;
 
 import com.google.common.base.Predicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

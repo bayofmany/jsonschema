@@ -1,11 +1,11 @@
 package org.bayofmany.jsonschema.testcases.validation;
 
 import com.google.common.base.Predicate;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.bayofmany.jsonschema.validation.constraints.MaxItems;
 import org.bayofmany.jsonschema.validation.constraints.MinItems;
 import org.bayofmany.jsonschema.validation.constraints.MultipleOf;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reflections.ReflectionUtils;
 
 import javax.validation.constraints.*;
@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.reflections.ReflectionUtils.*;
 
 public class ValidationKeywordsTest {
@@ -204,7 +204,7 @@ public class ValidationKeywordsTest {
      * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.13
      */
     @Test
-    @Ignore("This validation rule is currently out-of-scope for object generation")
+    @Ignore
     public void testMaxProperties() throws IOException, URISyntaxException {
     }
 
@@ -212,7 +212,7 @@ public class ValidationKeywordsTest {
      * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.14
      */
     @Test
-    @Ignore("This validation rule is currently out-of-scope for object generation")
+    @Ignore
     public void testMinProperties() throws IOException, URISyntaxException {
     }
 
