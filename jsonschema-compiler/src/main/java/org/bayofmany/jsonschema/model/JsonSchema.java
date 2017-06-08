@@ -352,7 +352,7 @@ public class JsonSchema {
     }
 
     public void visitSchemaDefinitions(String fileName, String packageName, Dictionary dictionary) {
-        String name = StringUtils.substringBefore(fileName, ".");
+        String name = StringUtils.substringAfterLast(StringUtils.removeEnd(StringUtils.removeEnd(fileName, ".schema.json"), ".json"), "/");
         meta = new MetaInformation(this, null, dictionary, name, packageName, fileName + "#");
         visitSchemaDefinitions(this, this, fileName + "#", packageName, dictionary);
         dictionary.add(this);

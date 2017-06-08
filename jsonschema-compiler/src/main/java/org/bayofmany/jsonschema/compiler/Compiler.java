@@ -25,13 +25,13 @@ import javax.lang.model.element.Modifier;
 import javax.validation.constraints.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -320,16 +320,28 @@ public class Compiler {
 
     public void generate(Path folder, String packageName) throws IOException {
         Dictionary dictionary = new Dictionary();
-        Files.newDirectoryStream(folder, entry -> entry.toString().endsWith(".json")).forEach(p -> {
-            String fileName = StringUtils.substringAfterLast(p.toUri().toString(), "/");
+        Files.walkFileTree(folder, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path p, BasicFileAttributes attrs) throws IOException {
+                if (!p.toString().endsWith(".json")) {
+                    return FileVisitResult.CONTINUE;
+                }
 
-            try {
-                ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY).enable(JsonParser.Feature.ALLOW_COMMENTS);
-                JsonSchema jsonSchema = mapper.readValue(p.toFile(), JsonSchema.class);
-                jsonSchema.visitSchemaDefinitions(fileName, packageName, dictionary);
-            } catch (IOException e) {
-                log.error("Error parsing file " + fileName, e);
+                String relative = folder.relativize(p).toString().replace(File.separatorChar, '/');
+
+                String fileName = StringUtils.substringAfterLast(relative, "/");
+                String subPackage = "." + safePackage(StringUtils.substringBeforeLast(relative, "/").replace('/', '.'));
+
+                try {
+                    ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY).enable(JsonParser.Feature.ALLOW_COMMENTS);
+                    JsonSchema jsonSchema = mapper.readValue(p.toFile(), JsonSchema.class);
+                    jsonSchema.visitSchemaDefinitions(relative, packageName + subPackage, dictionary);
+                } catch (IOException e) {
+                    log.error("Error parsing file " + fileName, e);
+                }
+                return FileVisitResult.CONTINUE;
             }
+
         });
 
         dictionary.getRootSchemas().forEach(schema -> {
@@ -339,11 +351,30 @@ public class Compiler {
                     JavaFile.builder(schema.meta.packageName, type).build().writeTo(outputDir);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Error generating {}", schema.meta.schemaRef);
             }
         });
 
     }
+
+    private static String safePackage(String packageName) {
+        StringJoiner joiner = new StringJoiner(".");
+        for (String part : packageName.split("\\.")) {
+            if ("enum".equals(part)) {
+                joiner.add("enumeration");
+            } else if ("default".equals(part)) {
+                joiner.add("defaultvalue");
+            } else if ("class".equals(part)) {
+                joiner.add("clazz");
+            } else if ("interface".equals(part)) {
+                joiner.add("intrface");
+            } else {
+                joiner.add(part);
+            }
+        }
+        return joiner.toString();
+    }
+
 
     private String upperCaseFirst(String name) {
         return name.substring(0, 1).toUpperCase() + name.substring(1);
