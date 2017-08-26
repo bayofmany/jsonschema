@@ -10,6 +10,7 @@ import java.util.Set;
 import static org.reflections.ReflectionUtils.forName;
 import static org.reflections.ReflectionUtils.getFields;
 
+@SuppressWarnings("WeakerAccess")
 public class MetadataKeywordsTest {
 
     /**

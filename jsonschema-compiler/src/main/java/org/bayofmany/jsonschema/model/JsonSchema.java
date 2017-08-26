@@ -134,25 +134,6 @@ public class JsonSchema {
 
     @JsonProperty
     private Media media;
-    /*
-            "type": {
-        "anyOf": [
-        {
-            "$ref": "#/definitions/simpleTypes"
-        },
-        {
-            "type": "array",
-                "items": {
-            "$ref": "#/definitions/simpleTypes"
-        },
-            "minItems": 1,
-                "uniqueItems": true
-        }
-      ]
-    },
-
-
-    */
 
     @JsonProperty
     private String format;
@@ -166,7 +147,6 @@ public class JsonSchema {
 
     @JsonProperty
     private JsonSchema not;
-    private String uniqueRef;
 
 
     @JsonProperty("additionalProperties")
@@ -391,6 +371,25 @@ public class JsonSchema {
             visitSchemaDefinitions(schema.additionalPropertiesSchema, parent, "tmp", packageName, dictionary);
             dictionary.add(schema.additionalPropertiesSchema);
         }
+
+        if (schema.allOf != null && schema.allOf.length == 2) {
+
+            JsonSchema extendSchema = null;
+            JsonSchema currentSchema = null;
+
+            for (JsonSchema s : schema.allOf) {
+                String ref = s.getUniqueRef();
+                if (ref == null) {
+                    currentSchema = s;
+                } else {
+                    extendSchema = s;
+                }
+            }
+
+            if (extendSchema != null && currentSchema != null) {
+                currentSchema.meta.extendsRef = extendSchema.getUniqueRef();
+            }
+        }
     }
 
     /*-public void visitSchemas(Consumer<JsonSchema> c) {
@@ -403,6 +402,7 @@ public class JsonSchema {
         c.accept(this.not);
         c.accept(this.items);
     }*/
+    
 
     boolean hasUniqueItems() {
         return uniqueItems == Boolean.TRUE;

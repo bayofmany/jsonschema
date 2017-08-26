@@ -37,7 +37,7 @@
                     <mainClass>org.bayofmany.jsonschema.cli.Generate</mainClass>
                     <arguments>
                         <argument>org.bayofmany.jsonschema.testcases</argument>
-                        <argument>${basedir}/src/test/resources/org/bayofmany/jsonschema/testcases</argument>
+                        <argument>${basedir}/src/test/resources/schemas</argument>
                         <argument>${project.build.directory}/generated-test-sources/jsonschema-core</argument>
                     </arguments>
                     <testSourceRoot>${project.build.directory}/generated-test-sources/jsonschema-core</testSourceRoot>

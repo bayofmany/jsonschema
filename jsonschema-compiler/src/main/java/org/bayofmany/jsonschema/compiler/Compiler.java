@@ -359,7 +359,7 @@ public class Compiler {
 
     private static String safePackage(String packageName) {
         StringJoiner joiner = new StringJoiner(".");
-        for (String part : packageName.split("\\.")) {
+        for (String part : packageName.toLowerCase().split("\\.")) {
             if ("enum".equals(part)) {
                 joiner.add("enumeration");
             } else if ("default".equals(part)) {

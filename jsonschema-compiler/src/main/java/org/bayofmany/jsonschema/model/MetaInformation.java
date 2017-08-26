@@ -26,6 +26,7 @@ public class MetaInformation {
     private final Dictionary dictionary;
 
     private TypeName typeName;
+    public String extendsRef;
 
     public MetaInformation(JsonSchema schema, JsonSchema parent, Dictionary dictionary, String name, String packageName, String schemaRef) {
         this.schema = schema;
