@@ -387,7 +387,7 @@ public class JsonSchema {
             }
 
             if (extendSchema != null && currentSchema != null) {
-                currentSchema.meta.extendsRef = extendSchema.getUniqueRef();
+//                currentSchema.meta.extendsRef = extendSchema.getUniqueRef();
             }
         }
     }
