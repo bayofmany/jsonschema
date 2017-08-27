@@ -22,7 +22,7 @@ import static org.reflections.ReflectionUtils.*;
 public class ValidationKeywordsTest {
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.1
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.1
      */
     @Test
     public void testMultipleOf() throws IOException, URISyntaxException {
@@ -34,7 +34,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.2
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.2
      */
     @Test
     public void testMaximum() throws IOException, URISyntaxException {
@@ -53,7 +53,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.3
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.3
      */
     @Test
     public void testExclusiveMaximum() throws IOException, URISyntaxException {
@@ -71,7 +71,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.4
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.4
      */
     @Test
     public void testMinimum() throws IOException, URISyntaxException {
@@ -90,7 +90,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.5
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.5
      */
     @Test
     public void testExclusiveMinimum() throws IOException, URISyntaxException {
@@ -108,7 +108,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.6
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.6
      */
     @Test
     public void testMaxLength() throws IOException, URISyntaxException {
@@ -123,7 +123,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.7
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.7
      */
     @Test
     public void testMinLength() throws IOException, URISyntaxException {
@@ -138,7 +138,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.8
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.8
      */
     @Test
     public void testPattern() throws IOException, URISyntaxException {
@@ -153,7 +153,15 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.9
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.9
+     */
+    @Test
+    public void testItems() throws IOException, URISyntaxException {
+        // TODO
+    }
+
+    /**
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.10
      */
     @Test
     public void testAdditionalItems() throws IOException, URISyntaxException {
@@ -162,7 +170,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.10
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.11
      */
     @Test
     public void testMaxItems() throws IOException, URISyntaxException {
@@ -174,7 +182,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.11
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.12
      */
     @Test
     public void testMinItems() throws IOException, URISyntaxException {
@@ -186,7 +194,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.12
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.13
      */
     @Test
     public void testUniqueItems() throws IOException, URISyntaxException {
@@ -202,7 +210,15 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.13
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.14
+     */
+    @Test
+    @Ignore
+    public void testContains() throws IOException, URISyntaxException {
+    }
+
+    /**
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.15
      */
     @Test
     @Ignore
@@ -210,7 +226,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.14
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.16
      */
     @Test
     @Ignore
@@ -218,7 +234,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.15
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.17
      */
     @Test
     public void testRequired() throws IOException, URISyntaxException {
@@ -230,7 +246,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.16
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.18
      */
     @Test
     public void testProperties() throws IOException, URISyntaxException {
@@ -250,7 +266,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.17
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.19
      */
     @Test
     public void testPatternProperties() throws IOException, URISyntaxException {
@@ -258,7 +274,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.18
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.20
      */
     @Test
     public void testAdditionalProperties() throws IOException, URISyntaxException {
@@ -277,15 +293,23 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.19
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.21
      */
     @Test
-    public void testDependencies() throws IOException, URISyntaxException {
+    public void testDependencies() {
         // TODO
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.20
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.22
+     */
+    @Test
+    public void testPropertyNames() {
+        // TODO
+    }
+
+    /**
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.23
      */
     @Test
     public void testEnum() throws IOException, URISyntaxException {
@@ -312,7 +336,15 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.21
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.24
+     */
+    @Test
+    public void testConst() {
+        // TODO
+    }
+
+    /**
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.25
      */
     @Test
     public void testType() throws IOException, URISyntaxException {
@@ -330,7 +362,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.22
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.26
      */
     @Test
     public void testAllOf() throws IOException, URISyntaxException {
@@ -338,7 +370,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.23
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.27
      */
     @Test
     public void testAnyOf() throws IOException, URISyntaxException {
@@ -346,7 +378,7 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.24
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.28
      */
     @Test
     public void testOneOf() throws IOException, URISyntaxException {
@@ -354,18 +386,10 @@ public class ValidationKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.25
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.29
      */
     @Test
     public void testNot() throws IOException, URISyntaxException {
-        // TODO
-    }
-
-    /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.26
-     */
-    @Test
-    public void testDefinitions() throws IOException, URISyntaxException {
         // TODO
     }
 

@@ -14,7 +14,15 @@ import static org.reflections.ReflectionUtils.getFields;
 public class MetadataKeywordsTest {
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.1
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.7.1
+     */
+    @Test
+    public void testDefinitions() throws IOException {
+        // TODO
+    }
+
+    /**
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.7.2
      */
     @Test
     public void testTitleAndDescription() throws IOException {
@@ -22,11 +30,19 @@ public class MetadataKeywordsTest {
     }
 
     /**
-     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.2
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.7.3
      */
     @Test
     public void testDefault() throws IOException {
         load("default");
+    }
+
+    /**
+     * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.7.4
+     */
+    @Test
+    public void testExamples() throws IOException {
+        // TODO
     }
 
     @SafeVarargs
