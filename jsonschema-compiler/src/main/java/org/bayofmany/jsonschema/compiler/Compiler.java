@@ -65,6 +65,7 @@ public class Compiler {
                 .build();
         type.addAnnotation(generated);
 
+        // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.7.2
         if (schema.title != null || schema.description != null) {
             AnnotationSpec.Builder apiModel = AnnotationSpec.builder(ApiModel.class);
             if (schema.title != null) {
@@ -76,7 +77,7 @@ public class Compiler {
             type.addAnnotation(apiModel.build());
         }
 
-
+        // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.18
         if (schema.properties != null) {
             for (Map.Entry<String, JsonSchema> entry : schema.properties.getAdditionalProperties().entrySet()) {
                 String fieldName = lowerCaseFirst(escapePredefined(entry.getKey()));
@@ -90,13 +91,13 @@ public class Compiler {
 
                 FieldSpec.Builder field = FieldSpec.builder(propertyType, fieldName).addModifiers(Modifier.PRIVATE);
 
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.1
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.1
                 if (s.multipleOf != null && s.isNumericType()) {
                     field.addAnnotation(AnnotationSpec.builder(MultipleOf.class).addMember("value", "$L", s.multipleOf).build());
                 }
 
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.2
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.3
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.2
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.3
                 if (s.maximum != null && s.isNumericType()) {
                     if (s.maximum.longValue() == s.maximum) {
                         if (s.exclusiveMaximum == Boolean.TRUE) {
@@ -113,8 +114,8 @@ public class Compiler {
                     }
                 }
 
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.4
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.5
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.4
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.5
                 if (s.minimum != null && s.isNumericType()) {
                     if (s.minimum.longValue() == s.minimum) {
                         if (s.exclusiveMinimum == Boolean.TRUE) {
@@ -131,8 +132,8 @@ public class Compiler {
                     }
                 }
 
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.6
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.7
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.6
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.7
                 if (s.isStringType() && (s.minLength != null || s.maxLength != null)) {
                     AnnotationSpec.Builder size = AnnotationSpec.builder(Size.class);
                     if (s.minLength != null) {
@@ -144,27 +145,27 @@ public class Compiler {
                     field.addAnnotation(size.build());
                 }
 
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.8
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.8
                 if (s.pattern != null && s.isStringType()) {
                     field.addAnnotation(AnnotationSpec.builder(Pattern.class).addMember("regexp", "$S", s.pattern).build());
                 }
 
-
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.10
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.10
                 if (s.maxItems != null && s.isArrayType()) {
                     field.addAnnotation(AnnotationSpec.builder(MaxItems.class).addMember("value", "$L", s.maxItems).build());
                 }
 
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.11
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.12
                 if (s.minItems != null && s.isArrayType()) {
                     field.addAnnotation(AnnotationSpec.builder(MinItems.class).addMember("value", "$L", s.minItems).build());
                 }
 
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.15
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.17
                 if (schema.required.contains(fieldName)) {
                     field.addAnnotation(NotNull.class);
                 }
 
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.7.2
                 if (s.description != null) {
                     field.addAnnotation(AnnotationSpec.builder(ApiModelProperty.class).addMember("notes", "$S", s.description).build());
                 }
@@ -189,7 +190,7 @@ public class Compiler {
             }
         }
 
-
+        // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.20
         if (schema.additionalPropertiesBoolean != Boolean.FALSE) {
             TypeName propertiesType = schema.additionalPropertiesSchema == null ? TypeName.OBJECT : schema.additionalPropertiesSchema.meta.getType();
             ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), propertiesType);
@@ -217,6 +218,7 @@ public class Compiler {
             type.addMethod(getter).addMethod(setter);
         }
 
+        // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.7.1
         if (schema.definitions != null) {
             for (JsonSchema schema1 : schema.definitions.getAdditionalProperties().values()) {
                 if (schema1.isInlineType()) {
@@ -329,8 +331,15 @@ public class Compiler {
 
                 String relative = folder.relativize(p).toString().replace(File.separatorChar, '/');
 
-                String fileName = StringUtils.substringAfterLast(relative, "/");
-                String subPackage = "." + safePackage(StringUtils.substringBeforeLast(relative, "/").replace('/', '.'));
+                String fileName = relative;
+                if (fileName.contains("/")) {
+                    fileName = StringUtils.substringAfterLast(relative, "/");
+                }
+
+                String subPackage = "";
+                if (relative.contains("/")) {
+                    subPackage = "." + safePackage(StringUtils.substringBeforeLast(relative, "/").replace('/', '.'));
+                }
 
                 try {
                     ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY).enable(JsonParser.Feature.ALLOW_COMMENTS);
@@ -344,6 +353,8 @@ public class Compiler {
 
         });
 
+        dictionary.getRootSchemas().forEach(schema -> schema.meta.getType());
+
         dictionary.getRootSchemas().forEach(schema -> {
             try {
                 TypeSpec type = compile(schema);
@@ -351,7 +362,7 @@ public class Compiler {
                     JavaFile.builder(schema.meta.packageName, type).build().writeTo(outputDir);
                 }
             } catch (Exception e) {
-                log.error("Error generating {}", schema.meta.schemaRef);
+                log.error("Error generating " + schema.meta.schemaRef, e);
             }
         });
 

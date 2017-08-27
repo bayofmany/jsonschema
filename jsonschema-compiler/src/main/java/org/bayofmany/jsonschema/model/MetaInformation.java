@@ -3,6 +3,7 @@ package org.bayofmany.jsonschema.model;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
+import org.apache.commons.lang3.StringUtils;
 import org.bayofmany.jsonschema.compiler.Dictionary;
 import org.bayofmany.jsonschema.compiler.Util;
 
@@ -56,7 +57,7 @@ public class MetaInformation {
         if (schema.type == null) {
             String $ref = schema.getUniqueRef();
             if ($ref != null) {
-                $ref = normalizeRef($ref);
+                $ref = normalizeRef($ref, schemaRef);
                 JsonSchema resolvedSchema = dictionary.get($ref);
                 if (resolvedSchema != null) {
                     String $ref2 = resolvedSchema.getUniqueRef();
@@ -70,6 +71,10 @@ public class MetaInformation {
                         return;
                     }
                     if (resolvedSchema.isInlineType()) {
+                        typeName = resolvedSchema.meta.getType();
+                        return;
+                    }
+                    if (resolvedSchema.isObjectType()) {
                         typeName = resolvedSchema.meta.getType();
                         return;
                     }
@@ -103,7 +108,7 @@ public class MetaInformation {
 
         switch (schema.type[0]) {
             case ARRAY:
-                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.5.12
+                // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.9
                 TypeName itemType = schema.items == null ? TypeName.OBJECT : schema.items.meta.getType();
                 typeName = ParameterizedTypeName.get(ClassName.get(schema.hasUniqueItems() ? Set.class : List.class), itemType);
                 break;
@@ -138,19 +143,31 @@ public class MetaInformation {
         }
     }
 
-    private String normalizeRef(String $ref) {
+    private String normalizeRef(String $ref, String sourceRef) {
         if ($ref.contains(".json/#/")) {
-            $ref = $ref.replace(".json/#/", ".json#/");
+            throw new IllegalArgumentException($ref);
+            //$ref = $ref.replace(".json/#/", ".json#/");
         }
-        if (!$ref.startsWith("#") || parent == null) {
-            return $ref;
+
+        if ($ref.contains(".json#")) {
+            String sourceFile = StringUtils.substringBefore(sourceRef, ".json#");
+            if (sourceFile.contains("/")) {
+                return StringUtils.substringBeforeLast(sourceFile, "/") + "/" + $ref;
+            } else {
+                return $ref;
+            }
         }
-        String parentRef = parent.meta.schemaRef;
-        if (parentRef.contains("#")) {
-            return parentRef.substring(0, parentRef.indexOf("#")) + $ref;
-        } else {
-            return parentRef + "#" + $ref;
+
+        if ($ref.startsWith("#") && parent != null) {
+            String parentRef = parent.meta.schemaRef;
+            if (parentRef.contains("#")) {
+                return parentRef.substring(0, parentRef.indexOf("#")) + $ref;
+            } else {
+                return parentRef + "#" + $ref;
+            }
         }
+
+        return $ref;
     }
 
 

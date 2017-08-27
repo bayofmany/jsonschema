@@ -156,8 +156,20 @@ public class ValidationKeywordsTest {
      * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.9
      */
     @Test
-    public void testItems() throws IOException, URISyntaxException {
-        // TODO
+    public void testItems() {
+        Class<?> subject = load("items");
+
+        Field field = getField(subject, withName("bar"));
+        assertNotNull(field);
+        assertEquals("java.util.List<java.lang.String>", field.getGenericType().getTypeName());
+
+        field = getField(subject, withName("baz"));
+        assertNotNull(field);
+        assertEquals("java.util.List<org.bayofmany.jsonschema.testcases.validation.items.BazItem>", field.getGenericType().getTypeName());
+
+        field = getField(subject, withName("qux"));
+        assertNotNull(field);
+        assertEquals("java.util.List<org.bayofmany.jsonschema.testcases.validation.items.Qux>", field.getGenericType().getTypeName());
     }
 
     /**

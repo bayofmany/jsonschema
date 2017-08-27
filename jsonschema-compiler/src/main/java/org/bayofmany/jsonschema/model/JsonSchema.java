@@ -332,7 +332,10 @@ public class JsonSchema {
     }
 
     public void visitSchemaDefinitions(String fileName, String packageName, Dictionary dictionary) {
-        String name = StringUtils.substringAfterLast(StringUtils.removeEnd(StringUtils.removeEnd(fileName, ".schema.json"), ".json"), "/");
+        String name = StringUtils.removeEnd(StringUtils.removeEnd(fileName, ".schema.json"), ".json");
+        if (name.contains("/")) {
+            name = StringUtils.substringAfterLast(name, "/");
+        }
         meta = new MetaInformation(this, null, dictionary, name, packageName, fileName + "#");
         visitSchemaDefinitions(this, this, fileName + "#", packageName, dictionary);
         dictionary.add(this);
@@ -386,8 +389,8 @@ public class JsonSchema {
                 }
             }
 
-            if (extendSchema != null && currentSchema != null) {
-//                currentSchema.meta.extendsRef = extendSchema.getUniqueRef();
+            if (extendSchema != null && currentSchema != null && currentSchema.meta != null) { // TODO
+                currentSchema.meta.extendsRef = extendSchema.getUniqueRef();
             }
         }
     }
