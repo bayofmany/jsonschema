@@ -7,10 +7,15 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.bayofmany.jsonschema.compiler.Dictionary;
+import org.bayofmany.jsonschema.compiler.Util;
 
 import javax.validation.constraints.Min;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.bayofmany.jsonschema.compiler.Util.uri;
 
 @JsonIgnoreProperties({"javaType", "javaName", "example", "nonUniqueArray", "uniqueArray", "complexTypesArray", "extends", "javaEnumNames", "javaJsonView", "booleanProperty", "stringProperty", "_name", "deserializationClassProperty", "enumProperty", "objectProperty", "anyProperty", "arrayProperty", "numberProperty", "integerProperty", "customDateTimePattern", "customTimezone", "extendsJavaClass", "smalsValidationClassName"})
 public class JsonSchema {
@@ -169,7 +174,7 @@ public class JsonSchema {
         }
     }
 
-    public String getUniqueRef() {
+    public URI getUniqueRef() {
         boolean onlyRef = $ref != null &&
                 $schema == null &&
                 additionalItemsBoolean == null &&
@@ -208,7 +213,7 @@ public class JsonSchema {
                 type == null &&
                 uniqueItems == null;
 
-        return onlyRef ? $ref : null;
+        return onlyRef ? uri($ref) : null;
     }
 
     SchemaType getUniqueType() {
@@ -331,21 +336,22 @@ public class JsonSchema {
         return false;
     }
 
-    public void visitSchemaDefinitions(String fileName, String packageName, Dictionary dictionary) {
+    public void visitSchemaDefinitions(URI uri, String fileName, String packageName, Dictionary dictionary) {
         String name = StringUtils.removeEnd(StringUtils.removeEnd(fileName, ".schema.json"), ".json");
         if (name.contains("/")) {
             name = StringUtils.substringAfterLast(name, "/");
         }
-        meta = new MetaInformation(this, null, dictionary, name, packageName, fileName + "#");
-        visitSchemaDefinitions(this, this, fileName + "#", packageName, dictionary);
+        meta = new MetaInformation(this, null, dictionary, name, packageName, uri);
+        visitSchemaDefinitions(this, this, meta.schemaRef, packageName, dictionary);
+
         dictionary.add(this);
     }
 
 
-    private static void visitSchemaDefinitions(JsonSchema schema, JsonSchema parent, String schemaRef, String packageName, Dictionary dictionary) {
+    private static void visitSchemaDefinitions(JsonSchema schema, JsonSchema parent, URI schemaRef, String packageName, Dictionary dictionary) {
         if (schema.definitions != null) {
             schema.definitions.getAdditionalProperties().forEach((key, s) -> {
-                String ref = schemaRef + "/definitions/" + key;
+                URI ref = uri(schemaRef, "definitions/" + key);
 
                 s.meta = new MetaInformation(s, parent, dictionary, key, packageName, ref);
                 visitSchemaDefinitions(s, parent, ref, packageName, dictionary);
@@ -353,7 +359,7 @@ public class JsonSchema {
             });
         }
         if (schema.items != null) {
-            String ref = schemaRef + "/items";
+            URI ref = uri(schemaRef, "items");
 
             schema.items.meta = new MetaInformation(schema.items, parent, dictionary, schema.meta.name + "Item", packageName, ref);
             visitSchemaDefinitions(schema.items, parent, ref, packageName, dictionary);
@@ -361,7 +367,7 @@ public class JsonSchema {
         }
         if (schema.properties != null) {
             schema.properties.getAdditionalProperties().forEach((key, s) -> {
-                String ref = schemaRef + "/properties/" + key;
+                URI ref = uri(schemaRef, "properties/" + key);
 
                 s.meta = new MetaInformation(s, parent, dictionary, key, packageName, ref);
                 visitSchemaDefinitions(s, parent, ref, packageName, dictionary);
@@ -370,8 +376,8 @@ public class JsonSchema {
         }
 
         if (schema.additionalPropertiesSchema != null) {
-            schema.additionalPropertiesSchema.meta = new MetaInformation(schema.additionalPropertiesSchema, parent, dictionary, "additionalProperties", packageName, schemaRef + "#/additionalProperties");
-            visitSchemaDefinitions(schema.additionalPropertiesSchema, parent, "tmp", packageName, dictionary);
+            schema.additionalPropertiesSchema.meta = new MetaInformation(schema.additionalPropertiesSchema, parent, dictionary, "#additionalProperties", packageName, uri(schemaRef + "#/additionalProperties"));
+            visitSchemaDefinitions(schema.additionalPropertiesSchema, parent, uri("tmp"), packageName, dictionary);
             dictionary.add(schema.additionalPropertiesSchema);
         }
 
@@ -381,7 +387,7 @@ public class JsonSchema {
             JsonSchema currentSchema = null;
 
             for (JsonSchema s : schema.allOf) {
-                String ref = s.getUniqueRef();
+                URI ref = s.getUniqueRef();
                 if (ref == null) {
                     currentSchema = s;
                 } else {
@@ -405,7 +411,7 @@ public class JsonSchema {
         c.accept(this.not);
         c.accept(this.items);
     }*/
-    
+
 
     boolean hasUniqueItems() {
         return uniqueItems == Boolean.TRUE;
@@ -413,7 +419,7 @@ public class JsonSchema {
 
     @Override
     public String toString() {
-        return meta == null ? "$ref unknown" : meta.schemaRef;
+        return meta == null ? "$ref unknown" : meta.toString();
     }
 
 }

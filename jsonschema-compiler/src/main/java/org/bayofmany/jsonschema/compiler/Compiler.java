@@ -25,6 +25,8 @@ import javax.lang.model.element.Modifier;
 import javax.validation.constraints.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +35,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.bayofmany.jsonschema.compiler.Util.uri;
 
 
 public class Compiler {
@@ -344,7 +348,7 @@ public class Compiler {
                 try {
                     ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY).enable(JsonParser.Feature.ALLOW_COMMENTS);
                     JsonSchema jsonSchema = mapper.readValue(p.toFile(), JsonSchema.class);
-                    jsonSchema.visitSchemaDefinitions(relative, packageName + subPackage, dictionary);
+                    jsonSchema.visitSchemaDefinitions(p.toUri(), relative, packageName + subPackage, dictionary);
                 } catch (IOException e) {
                     log.error("Error parsing file " + fileName, e);
                 }

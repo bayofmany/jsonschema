@@ -7,19 +7,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.bayofmany.jsonschema.compiler.Dictionary;
 import org.bayofmany.jsonschema.compiler.Util;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.bayofmany.jsonschema.compiler.Util.upperCaseFirst;
+import static org.bayofmany.jsonschema.compiler.Util.uri;
 
 public class MetaInformation {
     public final String packageName;
 
     public final String name;
 
-    public final String schemaRef;
+    public final URI schemaRef;
 
     private final JsonSchema schema;
 
@@ -27,9 +29,9 @@ public class MetaInformation {
     private final Dictionary dictionary;
 
     private TypeName typeName;
-    public String extendsRef;
+    public URI extendsRef;
 
-    public MetaInformation(JsonSchema schema, JsonSchema parent, Dictionary dictionary, String name, String packageName, String schemaRef) {
+    public MetaInformation(JsonSchema schema, JsonSchema parent, Dictionary dictionary, String name, String packageName, URI schemaRef) {
         this.schema = schema;
         this.parent = parent;
 
@@ -55,12 +57,11 @@ public class MetaInformation {
         }
 
         if (schema.type == null) {
-            String $ref = schema.getUniqueRef();
+            URI $ref = schema.getUniqueRef();
             if ($ref != null) {
-                $ref = normalizeRef($ref, schemaRef);
-                JsonSchema resolvedSchema = dictionary.get($ref);
+                JsonSchema resolvedSchema = dictionary.get(schemaRef.resolve($ref));
                 if (resolvedSchema != null) {
-                    String $ref2 = resolvedSchema.getUniqueRef();
+                    URI $ref2 = resolvedSchema.getUniqueRef();
                     if ($ref2 != null) {
                         JsonSchema resolvedSchema2 = dictionary.get($ref2);
                         typeName = resolvedSchema2.meta.getType();
@@ -78,19 +79,19 @@ public class MetaInformation {
                         typeName = resolvedSchema.meta.getType();
                         return;
                     }
-                    if ($ref.startsWith("#/definitions/")) {
-                        $ref = $ref.substring(14);
-                        typeName = ClassName.get(packageName, upperCaseFirst($ref));
+                    if ($ref.toString().startsWith("#/definitions/")) {
+                        $ref = uri($ref.toString().substring(14));
+                        typeName = ClassName.get(packageName, upperCaseFirst($ref.toString()));
                         return;
                     }
 
-                    Matcher matcher = Pattern.compile("(.*).json[#]?$").matcher($ref);
+                    Matcher matcher = Pattern.compile("(.*).json[#]?$").matcher($ref.toString());
                     if (matcher.matches()) {
                         typeName = ClassName.get(packageName, upperCaseFirst(matcher.group(1)));
                         return;
                     }
 
-                    matcher = Pattern.compile("(.*)#/definitions/([^/]*)$").matcher($ref);
+                    matcher = Pattern.compile("(.*)#/definitions/([^/]*)$").matcher($ref.toString());
                     if (matcher.matches()) {
                         typeName = ClassName.get(packageName, upperCaseFirst(matcher.group(2)));
                         return;
@@ -159,9 +160,9 @@ public class MetaInformation {
         }
 
         if ($ref.startsWith("#") && parent != null) {
-            String parentRef = parent.meta.schemaRef;
-            if (parentRef.contains("#")) {
-                return parentRef.substring(0, parentRef.indexOf("#")) + $ref;
+            URI parentRef = parent.meta.schemaRef;
+            if (parentRef.toString().contains("#")) {
+                return parentRef.toString().substring(0, parentRef.toString().indexOf("#")) + $ref;
             } else {
                 return parentRef + "#" + $ref;
             }
@@ -173,7 +174,7 @@ public class MetaInformation {
 
     @Override
     public String toString() {
-        return schemaRef;
+        return schemaRef.toString();
     }
 
     public boolean isRoot() {
