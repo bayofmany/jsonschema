@@ -25,8 +25,6 @@ import javax.lang.model.element.Modifier;
 import javax.validation.constraints.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,8 +33,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.bayofmany.jsonschema.compiler.Util.uri;
 
 
 public class Compiler {
@@ -61,6 +57,11 @@ public class Compiler {
 
         TypeSpec.Builder type = TypeSpec.classBuilder(className)
                 .addModifiers(Modifier.PUBLIC);
+
+        TypeName extendsType = schema.meta.getExtendsType();
+        if (extendsType != null) {
+            type.superclass(extendsType);
+        }
 
         AnnotationSpec generated = AnnotationSpec.builder(Generated.class)
                 .addMember("value", "$S", Compiler.class.getName())

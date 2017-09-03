@@ -227,6 +227,7 @@ public class ValidationKeywordsTest {
     @Test
     @Ignore
     public void testContains() throws IOException, URISyntaxException {
+        // Validation rule not mapped to generated class
     }
 
     /**
@@ -235,6 +236,7 @@ public class ValidationKeywordsTest {
     @Test
     @Ignore
     public void testMaxProperties() throws IOException, URISyntaxException {
+        // Validation rule not mapped to generated class
     }
 
     /**
@@ -243,6 +245,7 @@ public class ValidationKeywordsTest {
     @Test
     @Ignore
     public void testMinProperties() throws IOException, URISyntaxException {
+        // Validation rule not mapped to generated class
     }
 
     /**
@@ -316,8 +319,9 @@ public class ValidationKeywordsTest {
      * @apiNote http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.22
      */
     @Test
+    @Ignore
     public void testPropertyNames() {
-        // TODO
+        // Validation rule not mapped to generated class
     }
 
     /**
@@ -378,7 +382,9 @@ public class ValidationKeywordsTest {
      */
     @Test
     public void testAllOf() throws IOException, URISyntaxException {
-        // TODO
+        Class<?> baz = load("allOf", "Baz");
+        assertEquals("org.bayofmany.jsonschema.testcases.validation.allof.Foo", baz.getSuperclass().getName());
+    //    assertNotNull(getField(baz, withName("qux"), withType(String.class)));
     }
 
     /**

@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.reflections.ReflectionUtils.forName;
 import static org.reflections.ReflectionUtils.getFields;
+import static org.reflections.ReflectionUtils.withName;
 
 @SuppressWarnings("WeakerAccess")
 public class MetadataKeywordsTest {
@@ -18,7 +20,8 @@ public class MetadataKeywordsTest {
      */
     @Test
     public void testDefinitions() throws IOException {
-        // TODO
+        Class<?> subject = load("definitions", "Bar");
+        assertNotNull(getField(subject, withName("baz")));
     }
 
     /**
@@ -53,6 +56,10 @@ public class MetadataKeywordsTest {
 
     private Class<?> load(String test) throws IOException {
         return forName("org.bayofmany.jsonschema.testcases.metadata." + test.toLowerCase().replace("default", "defaultvalue") + ".Foo");
+    }
+
+    private Class<?> load(String test, String classname) throws IOException {
+        return forName("org.bayofmany.jsonschema.testcases.metadata." + test.toLowerCase().replace("default", "defaultvalue") + "." + classname);
     }
 
 

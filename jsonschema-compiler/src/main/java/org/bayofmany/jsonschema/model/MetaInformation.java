@@ -42,6 +42,14 @@ public class MetaInformation {
 
     }
 
+    public TypeName getExtendsType() {
+        if (extendsRef == null) {
+            return null;
+        }
+        JsonSchema jsonSchema = dictionary.get(extendsRef);
+        return jsonSchema.meta.getType();
+    }
+
     public TypeName getType() {
         if (typeName == null) {
             setType();
@@ -59,7 +67,9 @@ public class MetaInformation {
         if (schema.type == null) {
             URI $ref = schema.getUniqueRef();
             if ($ref != null) {
-                JsonSchema resolvedSchema = dictionary.get(schemaRef.resolve($ref));
+
+
+                JsonSchema resolvedSchema = "#".equals($ref.toString()) ? schema : dictionary.get(schemaRef.resolve($ref));
                 if (resolvedSchema != null) {
                     URI $ref2 = resolvedSchema.getUniqueRef();
                     if ($ref2 != null) {
@@ -98,12 +108,20 @@ public class MetaInformation {
                     }
                 }
             }
-            typeName = TypeName.OBJECT;
-            return;
         }
 
         if (schema.isPrimitiveType()) {
             typeName = getPrimitiveType();
+            return;
+        }
+
+        if (schema.isExtendsType()) {
+            typeName = ClassName.get(packageName, Util.upperCaseFirst(name));
+            return;
+        }
+
+        if (schema.type == null) {
+            typeName = TypeName.OBJECT;
             return;
         }
 

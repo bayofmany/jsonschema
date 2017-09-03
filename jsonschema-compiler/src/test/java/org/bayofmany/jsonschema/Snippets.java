@@ -7,6 +7,7 @@ public class Snippets {
 
     public static void main(String[] args) throws URISyntaxException {
         URI uri = new URI("file:///C:/dev/prj/jsonschema/jsonschema-compiler/src/test/resources/schemas/ref/bar/bar.json#/properties/qux");
+        URI uri4 = new URI("file:/C:/dev/prj/jsonschema/jsonschema-compiler/src/test/resources/schemas/ref/bar/bar.json#/properties/qux");
         URI uri2 = new URI("../qux/qux.json#blabla");
         URI uri3 = new URI("file:///C:/dev/prj/jsonschema/jsonschema-compiler/src/test/resources/schemas/ref/qux/qux.json#");
         System.out.println(uri3.normalize());
@@ -19,6 +20,7 @@ public class Snippets {
         System.out.println(uri2.isOpaque());
         System.out.println(uri3.isOpaque());
 
-        System.out.println(uri3);
+        System.out.println(uri.compareTo(uri4));
+        System.out.println(uri.equals(uri4));
     }
 }

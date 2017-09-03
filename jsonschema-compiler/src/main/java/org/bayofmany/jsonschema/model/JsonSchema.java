@@ -3,6 +3,7 @@ package org.bayofmany.jsonschema.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonStreamContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +13,7 @@ import org.bayofmany.jsonschema.compiler.Util;
 import javax.validation.constraints.Min;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -96,6 +98,9 @@ public class JsonSchema {
     private Integer minProperties;
 
     @JsonProperty
+    private JsonSchema contains;
+
+    @JsonProperty
     public final Set<String> required = new HashSet<>();
 
     @JsonIgnore
@@ -152,6 +157,7 @@ public class JsonSchema {
 
     @JsonProperty
     private JsonSchema not;
+    private boolean extendsType;
 
 
     @JsonProperty("additionalProperties")
@@ -284,7 +290,7 @@ public class JsonSchema {
             type = new SchemaType[]{SchemaType.OBJECT};
         }
 
-        return isType(SchemaType.OBJECT);
+        return isType(SchemaType.OBJECT) || isExtendsType();
     }
 
     private boolean isType(SchemaType t) {
@@ -376,13 +382,13 @@ public class JsonSchema {
         }
 
         if (schema.additionalPropertiesSchema != null) {
-            schema.additionalPropertiesSchema.meta = new MetaInformation(schema.additionalPropertiesSchema, parent, dictionary, "#additionalProperties", packageName, uri(schemaRef + "#/additionalProperties"));
+            schema.additionalPropertiesSchema.meta = new MetaInformation(schema.additionalPropertiesSchema, parent, dictionary, "/additionalProperties", packageName, uri(schemaRef, "additionalProperties"));
             visitSchemaDefinitions(schema.additionalPropertiesSchema, parent, uri("tmp"), packageName, dictionary);
             dictionary.add(schema.additionalPropertiesSchema);
         }
 
+        // allOf currently only supported in the case of single inheritance where one of the two schemas is an existing class
         if (schema.allOf != null && schema.allOf.length == 2) {
-
             JsonSchema extendSchema = null;
             JsonSchema currentSchema = null;
 
@@ -395,8 +401,8 @@ public class JsonSchema {
                 }
             }
 
-            if (extendSchema != null && currentSchema != null && currentSchema.meta != null) { // TODO
-                currentSchema.meta.extendsRef = extendSchema.getUniqueRef();
+            if (extendSchema != null && currentSchema != null) {
+                schema.meta.extendsRef = schema.meta.schemaRef.resolve(extendSchema.getUniqueRef());
             }
         }
     }
@@ -422,4 +428,7 @@ public class JsonSchema {
         return meta == null ? "$ref unknown" : meta.toString();
     }
 
+    public boolean isExtendsType() {
+        return allOf != null && Arrays.stream(allOf).anyMatch(s -> s.isObjectType());
+    }
 }

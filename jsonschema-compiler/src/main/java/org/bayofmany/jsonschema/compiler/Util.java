@@ -13,13 +13,18 @@ public class Util {
         try {
             return new URI(value);
         } catch (URISyntaxException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException("Invalid URI: " + value);
         }
     }
 
     public static URI uri(URI parent, String relative) {
+        if (!relative.startsWith("/")) {
+            relative = "/" + relative;
+        }
+
         if (parent.toString().contains("#")) {
-            return uri(parent.toString() + "/" + relative);
+            return uri(parent.toString() + relative);
         } else {
             return uri(parent.toString() + "#" + relative);
         }
