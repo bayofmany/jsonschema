@@ -68,8 +68,12 @@ public class MetaInformation {
             URI $ref = schema.getUniqueRef();
             if ($ref != null) {
 
+                if ("#".equals($ref.toString())) {
+                    typeName = parent.meta.getType();
+                    return;
+                }
 
-                JsonSchema resolvedSchema = "#".equals($ref.toString()) ? schema : dictionary.get(schemaRef.resolve($ref));
+                JsonSchema resolvedSchema = dictionary.get(schemaRef.resolve($ref));
                 if (resolvedSchema != null) {
                     URI $ref2 = resolvedSchema.getUniqueRef();
                     if ($ref2 != null) {

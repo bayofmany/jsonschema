@@ -26,6 +26,9 @@ public class JsonSchema {
     public MetaInformation meta;
 
     @JsonProperty
+    private String $id;
+
+    @JsonProperty
     private String id;
 
     @JsonProperty
@@ -181,45 +184,7 @@ public class JsonSchema {
     }
 
     public URI getUniqueRef() {
-        boolean onlyRef = $ref != null &&
-                $schema == null &&
-                additionalItemsBoolean == null &&
-                additionalItemsSchema == null &&
-                additionalPropertiesBoolean == null &&
-                additionalPropertiesSchema == null &&
-                allOf == null &&
-                anyOf == null &&
-                definitions == null &&
-                dependencies == null &&
-                description == null &&
-                enumeration == null &&
-                exclusiveMaximum == null &&
-                exclusiveMinimum == null &&
-                format == null &&
-                id == null &&
-                items == null &&
-                maxItems == null &&
-                maxLength == null &&
-                maxProperties == null &&
-                maximum == null &&
-                media == null &&
-                minItems == null &&
-                minLength == null &&
-                minProperties == null &&
-                minimum == null &&
-                multipleOf == null &&
-                not == null &&
-                oneOf == null &&
-                pattern == null &&
-                patternProperties == null &&
-                properties == null &&
-                schemaConst == null &&
-                schemaDefault == null &&
-                title == null &&
-                type == null &&
-                uniqueItems == null;
-
-        return onlyRef ? uri($ref) : null;
+        return $ref != null ? uri($ref) : null;
     }
 
     SchemaType getUniqueType() {
@@ -238,7 +203,7 @@ public class JsonSchema {
                 exclusiveMaximum == null &&
                 exclusiveMinimum == null &&
                 format == null &&
-                id == null &&
+                $id == null &&
                 items == null &&
                 maxItems == null &&
                 maxLength == null &&
@@ -293,10 +258,9 @@ public class JsonSchema {
         return isType(SchemaType.OBJECT) || isExtendsType();
     }
 
-    private boolean isType(SchemaType t) {
-        return type != null && type.length == 1 && type[0] == t;
+    private boolean isType(SchemaType type) {
+        return this.type != null && Arrays.stream(this.type).anyMatch(type::equals);
     }
-
 
     public boolean isEnumeration() {
         return enumeration != null;

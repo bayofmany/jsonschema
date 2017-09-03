@@ -1,6 +1,7 @@
 package org.bayofmany.jsonschema.compiler;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonParser;
@@ -82,11 +83,17 @@ public class Compiler {
             type.addAnnotation(apiModel.build());
         }
 
+        boolean additionalPropertiesSet = false;
+
         // @see http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.18
         if (schema.properties != null) {
             for (Map.Entry<String, JsonSchema> entry : schema.properties.getAdditionalProperties().entrySet()) {
                 String fieldName = lowerCaseFirst(escapePredefined(entry.getKey()));
                 JsonSchema s = entry.getValue();
+
+                if ("additionalProperties".equals(fieldName)) {
+                    additionalPropertiesSet = true;
+                }
 
                 TypeName propertyType = s.meta.getType();
                 if (s.enumeration != null) {
@@ -199,25 +206,29 @@ public class Compiler {
         if (schema.additionalPropertiesBoolean != Boolean.FALSE) {
             TypeName propertiesType = schema.additionalPropertiesSchema == null ? TypeName.OBJECT : schema.additionalPropertiesSchema.meta.getType();
             ParameterizedTypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), TypeName.get(String.class), propertiesType);
-            type.addField(FieldSpec.builder(mapType, "additionalProperties")
+
+            String fieldname = additionalPropertiesSet? "_additionalProperties" : "additionalProperties";
+
+            type.addField(FieldSpec.builder(mapType, fieldname)
                     .addModifiers(Modifier.PRIVATE)
                     .addAnnotation(JsonIgnore.class)
                     .build());
 
-            MethodSpec getter = MethodSpec.methodBuilder("getAdditionalProperties")
+            MethodSpec getter = MethodSpec.methodBuilder("getAdditionalProperty")
                     .addModifiers(Modifier.PUBLIC)
-                    .addParameter(String.class, "name")
                     .addAnnotation(JsonAnyGetter.class)
+                    .addParameter(String.class, "name")
                     .returns(propertiesType)
-                    .addStatement("return additionalProperties.get(name)")
+                    .addStatement("return $L.get(name)", fieldname)
                     .build();
 
             MethodSpec setter = MethodSpec.methodBuilder("setAdditionalProperty")
                     .addModifiers(Modifier.PUBLIC)
+                    .addAnnotation(JsonAnySetter.class)
                     .addParameter(String.class, "name")
                     .addParameter(propertiesType, "value")
                     .returns(void.class)
-                    .addStatement("this.additionalProperties.put(name, value)")
+                    .addStatement("this.$L.put(name, value)", fieldname)
                     .build();
 
             type.addMethod(getter).addMethod(setter);

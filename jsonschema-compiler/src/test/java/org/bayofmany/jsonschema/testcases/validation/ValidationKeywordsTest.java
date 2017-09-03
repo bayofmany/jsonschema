@@ -305,6 +305,9 @@ public class ValidationKeywordsTest {
         field = getField(load("additionalProperties", "Baz"), withName("additionalProperties"));
         assertNotNull(field);
         assertEquals("java.util.Map<java.lang.String, java.lang.String>", field.getGenericType().getTypeName());
+
+        field = getField(load("additionalProperties", "Qux"), withName("_additionalProperties"));
+        assertNotNull(field);
     }
 
     /**
